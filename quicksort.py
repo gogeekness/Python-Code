@@ -1,0 +1,43 @@
+#!/usr/bin/python2.7 -tt
+
+# Quick sort
+
+import sys
+import random
+
+
+def quick(Ary):
+	less = []
+	pivlst = []
+	more = []
+	if len(Ary) <= 1:
+		print("Array 1:", Ary)
+		return Ary
+	else:
+		pivot = Ary[0]
+		for i in Ary:
+			if i < pivot:
+				print("Less:", less, i) 
+				less.append(i)
+			elif i > pivot:
+				print("More:", more, i)
+				more.append(i)
+			else:
+				print("Pivot:", pivlst, i)
+				pivlst.append(i)
+		print("Less Call:", less)
+		less = quick(less)
+		print("More Call:", more)
+		more = quick(more)
+		print("Less Call:", less, "Pivlst:", pivlst, "More Call:", more)
+		return less + pivlst + more
+
+def main():
+	Ary = [10, 8, 20, 14, 5, 2, 12, 7, 9, 23, 3, 6, 15, 18]
+	Ary = quick(Ary)
+	print ("Finished:", Ary)
+
+
+# Boiler plate main()
+if __name__=='__main__':
+	main()	
