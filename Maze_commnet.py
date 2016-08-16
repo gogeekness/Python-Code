@@ -124,28 +124,29 @@ def solve(x,y):
     # directions for NORTH, EAST, SOUTH, WEST
     # F(n) = Goal
     global maze
+    print("Start Solve", x, y)
     if x == (width - 1) and y == (height - 1):
         maze[x][y][4] = True
-        #print("Found Goal", x, y, maze[x][y][4])
+        print("Found Goal", x, y, maze[x][y][4])
         return True
     if sealed_cell(x, y) != "opened" or maze[x][y][4] == True:
-        #print("Not Opened or Pathed", x, y, maze[x][y][4])
+        print("Not Opened or Pathed", x, y, maze[x][y][4])
         return False
     maze[x][y][4] = True
     if maze[x][y][0] == True and solve(x, y+1):
-        #print("NORTH ",x,y, maze[x][y][4])
+        print("NORTH ",x,y, maze[x][y][4])
         return True
     if maze[x][y][1] == True and solve(x+1, y):
-        #print("EAST ",x,y, maze[x][y][4])
+        print("EAST ",x,y, maze[x][y][4])
         return True
     if maze[x][y][2] == True and solve(x, y-1): 
-        #print("SOUTH ",x,y, maze[x][y][4])
+        print("SOUTH ",x,y, maze[x][y][4])
         return True          
     if maze[x][y][3] == True and solve(x-1, y):
-        #print("WEST ",x,y, maze[x][y][4])
+        print("WEST ",x,y, maze[x][y][4])
         return True 
     maze[x][y][4] = False 
-    #print("No Direction", x, y, maze[x][y][4])
+    print("No Direction", x, y, maze[x][y][4])
     return False   
    
 #standard out for main function

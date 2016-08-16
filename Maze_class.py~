@@ -1,4 +1,4 @@
-#Maze classes for Maze genpy
+#Maze classes for Maze gen.py
 
 class halls:
     
@@ -87,4 +87,8 @@ class halls:
         if self.data[x][y][3] == True and self.solve(x-1, y, width, height):
             return True 
         self.data[x][y][4] = False 
-        return False          
+        return False      
+ 
+            
+            
+    
