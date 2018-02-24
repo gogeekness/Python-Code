@@ -1,17 +1,26 @@
 #Maze classes for Maze genpy
+import random
+from random import shuffle
 
 class halls:
-    
+
+
+    #---------------------------------------------------------
+    # False --> blocked
+    # maze[0].append((True, False, False, True, True))
+    #                 NORTH, EAST, SOUTH, WEST, was here
+    #---------------------------------------------------------
+
     #Set init for the Maze
     def __init__(self):
         self.data = []
-        
+
     #reseal the halls in the maze
     def seal_halls(self, width, height):
         self.data = [[[False, False, False, False, False] for y in range(height)] for x in range(width)]
-        
+
     def open_doors(self, x, y, xx, yy):
-        #outxxyy = "X Y:" + str(x) + " " + str(y) + "  XX YY:" + str(xx) + " " + str(yy) 
+        #outxxyy = "X Y:" + str(x) + " " + str(y) + "  XX YY:" + str(xx) + " " + str(yy)
         #sys.stdout.write(outxxyy)
         if xx == 1: #EAST
             self.data[x][y][1] = True
@@ -21,7 +30,7 @@ class halls:
             self.data[x][y][3] = True
             self.data[x + xx][y][1] = True
             #print(" West")
-        elif yy == 1: #NORTH    
+        elif yy == 1: #NORTH
             self.data[x][y][0] = True
             self.data[x][y + yy][2] = True
             #print(" North")
@@ -29,45 +38,45 @@ class halls:
             self.data[x][y][2] = True
             self.data[x][y + yy][0] = True
             #print(" South")
-            # For viewing the data set for maze   
-    
+            # For viewing the data set for maze
+
     def sealed_cell(self, cellx, celly, width, height):
         if cellx in range(width) and celly in range(height):
         # are all door closed?
             if any(self.data[cellx][celly]) == False:
                 return "sealed"
-            else:   
+            else:
                 return "opened"
         else:
         #out of bounds are always sealed
             return "bounds"
-            
+
     def print_maze(self, width, height):
     # display u\2588 block char
     # directions for NORTH, EAST, SOUTH, WEST
         print(u'\u2588' * (3 * width + 1))
         for y in reversed(range(height)):
             cellew = u'\u2588'
-            for x in range(width):      # [ [(T, T, T, T) ...][() () () () () ][][][][]  ] 
+            for x in range(width):      # [ [(T, T, T, T) ...][() () () () () ][][][][]  ]
                 if self.data[x][y][1]:  #If there is a EAST opening
                     if self.data[x][y][4]:
                         cellew = cellew + " * "
                     else:
                         cellew = cellew + "   "
-                else:   
+                else:
                     if self.data[x][y][4]:
                         cellew = cellew + " *" + u'\u2588'
                     else:
                         cellew = cellew + "  " + u'\u2588'
             print(cellew)
             cellns = u'\u2588'
-            for x in range(width):  
+            for x in range(width):
                 if self.data[x][y][2]:  #Is there is a SOUTH opening
                     cellns = cellns + "  " + u'\u2588'
-                else:   
-                    cellns = cellns + (3 * u'\u2588') 
-            print(cellns)     
-                
+                else:
+                    cellns = cellns + (3 * u'\u2588')
+            print(cellns)
+
     def solve(self, x, y, width, height):
         # directions for NORTH, EAST, SOUTH, WEST
         # F(n) = Goal
@@ -82,9 +91,30 @@ class halls:
             return True
         if self.data[x][y][1] == True and self.solve(x+1, y, width, height):
             return True
-        if self.data[x][y][2] == True and self.solve(x, y-1, width, height): 
-            return True          
+        if self.data[x][y][2] == True and self.solve(x, y-1, width, height):
+            return True
         if self.data[x][y][3] == True and self.solve(x-1, y, width, height):
-            return True 
-        self.data[x][y][4] = False 
-        return False          
+            return True
+        self.data[x][y][4] = False
+        return False
+
+    def test_maze(self, width, height):
+        for y in range(height):
+            for x in range(width):
+                #print("Testing x y:" + str(x) + " " + str(y) + " " + sealed_cell(x,y))
+                if self.sealed_cell(x, y, width, height) == "sealed":
+                    return False
+        return True
+
+    def build_maze(self, x, y, width, height):
+        # directions for NORTH, EAST, SOUTH, WEST
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        shuffle(directions)
+        for (xx, yy) in directions:
+            #print("Cell x y:",x ,y,"  Added directions to x y:", x + xx, y + yy, "Limits ", width, height)
+            tested = self.sealed_cell(x + xx, y + yy, width, height)
+            if tested == "sealed":
+                self.open_doors(x, y, xx, yy)
+                #print_val()
+                #print("Good Cell:",x ,y, "Direction", xx, yy, "Added directions", x + xx, y + yy, " result:", tested, " Num: ", num )
+                self.build_maze(x + xx, y + yy, width, height)
